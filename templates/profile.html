@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+
+</head>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bitter:wght@500&family=Josefin+Sans:wght@300;400;600;700&family=Poppins:wght@600;800&display=swap');
+
+  * {
+    margin: 0;
+    padding: 0;
+    font-family: 'Bitter', sans-serif;
+  }
+
+  .image {
+
+    width: 200px;
+    height: 200px;
+    -webkit-border-radius: 75%;
+    -moz-border-radius: 75%;
+    box-shadow: 0 0 0 1px #eee;
+
+    background-size: cover
+  }
+
+  .image:hover {
+    box-shadow: 0px 5px 20px .9px #3F3F3F;
+  }
+
+  .image:hover {
+    -webkit-transform: scale(1.12);
+    transform: scale(1.12);
+    -webkit-transition: 1.6s ease-in-out;
+    transition: 1.6s ease-in-out;
+  }
+
+  .container {
+    padding-top: 150px;
+
+  }
+</style>
+
+<body>
+  <!-- nav bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark"
+    style="padding-top: 20px;padding-bottom: 20px; color: black;">
+    <div class="container-fluid">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" style="font-size: 18px; padding-left: 60px;" href="{% url 'home' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="font-size: 18px; padding-left: 60px;" href="{% url 'addpost' %}">Add Post</a>
+          </li>
+
+
+          {% if request.user.is_authenticated %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false" style="font-size: 18px; padding-left: 60px;">
+              {{request.user.username}}
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" style="font-size: 16px;"
+                  href="{% url 'profile' request.user.profile_set.first.pk %}">
+                  View Profile</a></li>
+              <li><a class="dropdown-item" style="font-size: 16px;" href="{% url 'log_out' %}">Log Out</a></li>
+
+              <li><a class="dropdown-item" style="font-size: 16px;" data-bs-toggle="modal"
+                  data-bs-target="#exampleModal">Delete Account</a></li>
+
+            </ul>
+          </li>
+          {% else %}
+          <li class="nav-item" style="padding-left: 60px;">
+            <a class="nav-link" style="font-size: 18px;" href="{% url 'signup' %}">Sign Up</a>
+          </li>
+          {% endif %}
+
+        </ul>
+
+        <form method="POST" action="{% url 'search_text' %}" class="d-flex">{% csrf_token %}
+          <input class="form-control me-2" type="text" name="search_text" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-info" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <!-- profile -->
+  <center>
+    <div class="box">
+
+      <div class="img" style=" margin-top: 100px;">
+        <img src="{{prof.dp.url}}" class="image">
+      </div>
+      &nbsp;
+      <p></p>
+
+      <div class="text" style=" width: 70%; position: relative; font-size: 23px;">
+        <p><strong>{{prof.prof_user.username}}</strong></p>
+        <small>{{prof.occupation}}</small>
+        <center>
+          <hr style="height:1px;border-width:0;color:rgb(95, 95, 95);background-color:rgb(63, 63, 63); width: 70vw;">
+        </center>
+
+        {% if prof.prof_user == request.user %}
+        <a href="{% url 'edit_profile' prof.pk %}" class="btn btn-outline-dark"
+          style="left: 0; position: absolute; font-family:Georgia, 'Times New Roman', Times, serif; margin-top: 5px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pen"
+            viewBox="0 0 16 16">
+            <path
+              d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z" />
+          </svg>
+          EDIT PROFILE</a>
+        {% endif %}
+        <!-- follow -->
+        <div class="flw" style="right: 0; position: absolute; font-size: 18px; margin-top: 50px;">
+          <ul class="list-inline mb-0">
+            <li class="list-inline-item">
+              <h5 class="font-weight-bold mb-0 d-block">{{postno}}</h5><small class="text-muted"> <i
+                  class="fa fa-picture-o mr-1"></i>POSTS</small>
+            </li>
+            <li class="list-inline-item">
+              <h5 class="font-weight-bold mb-0 d-block">4</h5><small class="text-muted"> <i
+                  class="fa fa-picture-o mr-1"></i>FOLLOWERS</small>
+            </li>
+            <li class="list-inline-item">
+              <h5 class="font-weight-bold mb-0 d-block">8</h5><small class="text-muted"> <i
+                  class="fa fa-user-circle-o mr-1"></i>FOLLOWING</small>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+  </center>
+
+
+
+  <!-- card -->
+  <div class="container" style="padding-bottom: 20px;">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+      {% for i in posts|slice:":10" %}
+
+
+      <div class="col">
+        <div class="card shadow-sm">
+
+          <img src="{{i.image.url}}" class="bd-placeholder-img card-img-top" alt="" ; style=" height: 350px;"
+            class="img-fluid">
+
+
+          <div class="card-body" style="position: relative;">
+            <center><h5><p class="card-text">{{i.title|truncatechars:45}}</p></h5></center>
+            <p class="card-text">{{i.description|truncatechars:50}}</p>
+  
+            <div class="d-flex justify-content-between align-items-center" style="padding-bottom: 10px;">
+              <div class="btn-group">
+
+                <a href="{% url 'single_post' i.pk %}" class="btn btn-sm btn-outline-secondary">View
+                  Post</a>
+                {% if i.author.prof_user == request.user %}
+                <a href="{% url 'edit_post' i.pk %}" class="btn btn-sm btn-outline-secondary">Edit
+                  Post</a>
+                <a href="{% url 'delete_post' i.pk %}" class="btn btn-sm btn-outline-secondary">Delete
+                  Post</a>
+                {% endif %}
+              </div>
+
+
+            </div>
+         <!-- &nbsp; -->
+            <small class="text-muted" style=" right: 0; position: absolute;">{{i.time}}&nbsp;&nbsp;</small>
+            &nbsp;
+          </div>
+        </div>
+      </div>
+
+
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+
+      <div class="modal-content">
+
+
+
+        <div class="modal-body">
+          <div class="delete">
+            <!-- form -->
+            <div class="container1 mt-4">
+              <form enctype="multipart/form-data" method="POST" action="{% url 'delete' %}">{% csrf_token %}
+
+          
+                <center><p style="font-size: 19px;">Are you sure you want to delete your account ?</p></center>
+
+                <br>
+                <center><button type="submit" class="btn btn-dark">Delete</button>
+                  <button type="button" class="btn btn-info" data-bs-dismiss="modal">Cancel</button>
+                </center>
+              
+              </form>
+
+
+              
+
+            </div>
+
+          </div>
+        </div>
+
+        
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+    crossorigin="anonymous"></script>
+
+</body>
+<!-- /* background: url("https://scontent.fjrh1-1.fna.fbcdn.net/v/t1.6435-9/134673369_188754216328287_6888537362635667855_n.jpg?_nc_cat=109&ccb=1-3&_nc_sid=174925&_nc_ohc=-3KnWm84EN0AX-lHZYq&_nc_ht=scontent.fjrh1-1.fna&oh=9e72bfa0dc8e49cfd8106f4cd24b3220&oe=60BEFE3B") center center no-repeat; */ -->
+
+</html>
